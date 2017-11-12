@@ -6,9 +6,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-/**
- * Created by eliaskraihanzel on 11/11/17.
- */
 public class Sprite extends ImageView {
     private Point2D velocity_, acceleration_;
     private Point2D image_direction_;
@@ -26,13 +23,15 @@ public class Sprite extends ImageView {
         this.setImage(new Image(image_source));
     }
 
-    public void set_image_(String image_source) {
+    public Sprite set_image_(String image_source) {
         this.setImage(new Image(image_source));
+        return this;
     }
 
 //    public Point2D get_position_() {
 //        return position_;
 //    }
+
 
     public Point2D get_image_direction_() {
         return image_direction_;
@@ -46,23 +45,24 @@ public class Sprite extends ImageView {
         return acceleration_;
     }
 
-    public void add_vector(double force, double direction) {
-
+    public Sprite add_vector(double force, double direction) {
+        return this;
     }
 
-    public void set_velocity(Point2D velocity) {
+    public Sprite set_velocity(Point2D velocity) {
         this.velocity_ = velocity;
+        return this;
     }
 
-    public void change_image_angle_by() {
-
+    public Sprite change_image_angle_by() {
+        return this;
     }
 
-    public void set_image_angle() {
-
+    public Sprite set_image_angle() {
+        return this;
     }
 
-    public void update() {
+    final void update() {
         setX(getX() + velocity_.getX());
         setY(getY() + velocity_.getY());
     }

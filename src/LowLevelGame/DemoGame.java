@@ -5,19 +5,15 @@ import game_engine.Game;
 import game_engine.Sprite;
 import javafx.geometry.Point2D;
 
-/**
- * Created by eliaskraihanzel on 11/11/17.
- */
 public class DemoGame extends Game {
     private static final String image_source = "math.png";
 
-    public static void main(String[] args) {
-        launch();
-    }
-
     public void init() {
-        Sprite blah = new Sprite(image_source);
-        blah.set_velocity(new Point2D(4,6));
-        this.add_sprite(blah);
+        set_dimensions(1000,1000);
+        Sprite sprite = new Sprite(image_source);
+        sprite.setFitWidth(200);
+        sprite.setFitHeight(100);
+        sprite.set_velocity(new Point2D(4,10));
+        this.add_sprite(sprite);
     }
 }
