@@ -2,6 +2,7 @@ package game_engine;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
@@ -10,6 +11,9 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.util.*;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 abstract public class Game extends Application {
     private final static int FRAME_RATE = 30;
@@ -18,23 +22,24 @@ abstract public class Game extends Application {
 
     private List<Sprite> sprite_list = new ArrayList<>();
 
-    private List<ConditionalAction> actions = new ArrayList<>();
+    private HashMap<BooleanSupplier, Runnable> actions = new HashMap<>();
 
-    private ObservableMap<KeyCode, Boolean> keyMap;
-
-    private Scene scene;
+    private EnumSet<KeyCode> keySet = EnumSet.noneOf(KeyCode.class);
 
     private void update() {
         sprite_list.forEach(Sprite::update);
-        actions.forEach(ConditionalAction::run);
+        actions.forEach((condition, action) -> {
+            if (condition.getAsBoolean())
+                action.run();
+        });
     }
 
     protected final void add_sprite(Sprite sprite) {
         sprite_list.add(sprite);
     }
 
-    protected void add_conditional_action(ConditionalAction action) {
-        actions.add(action);
+    protected void add_conditional_action(BooleanSupplier condition, Runnable action) {
+        actions.put(condition,action);
     }
 
     protected final void set_dimensions(int width, int height) {
@@ -42,20 +47,17 @@ abstract public class Game extends Application {
     }
 
     protected final Boolean key_pressed(KeyCode key) {
-        return keyMap.get(key);
+        return keySet.contains(key);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        keyMap = FXCollections.observableMap(new EnumMap<KeyCode, Boolean>(KeyCode.class));
-        Arrays.stream(KeyCode.values()).forEach((KeyCode value) -> keyMap.put(value, false));
-
         Group root = new Group();
         sprite_list.forEach(sprite -> root.getChildren().add(sprite));
-        scene = new Scene(root, dimensions.getWidth(), dimensions.getHeight());
+        Scene scene = new Scene(root, dimensions.getWidth(), dimensions.getHeight());
 
-        scene.setOnKeyPressed(event -> keyMap.put(event.getCode(), true));
-        scene.setOnKeyReleased(event -> keyMap.put(event.getCode(), false));
+        scene.setOnKeyPressed(event -> keySet.add(event.getCode()));
+        scene.setOnKeyReleased(event -> keySet.remove(event.getCode()));
 
         stage.setTitle("Low Level Game");
         stage.setScene(scene);
