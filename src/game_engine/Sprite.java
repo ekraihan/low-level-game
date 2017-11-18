@@ -1,6 +1,5 @@
 package game_engine;
 
-import javafx.animation.Animation;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -10,17 +9,24 @@ public class Sprite extends ImageView {
     private Point2D velocity_, acceleration_;
     private Point2D image_direction_;
     private Dimension2D dimensions_;
+    private State state;
+    private BoundaryAction boundaryAction;
 
     public enum BoundaryAction {
         DIE, CONTINUE, BOUNCE
     }
 
     public enum State {
-        HIDDEN, DEAD, VISIBLE
+        HIDDEN, DEAD, ALIVE
     }
 
     public Sprite(String image_source) {
-        this.setImage(new Image(image_source));
+        Image image = new Image(image_source);
+        setImage(image);
+        setFitHeight(image.getHeight());
+        setFitWidth(image.getWidth());
+
+        velocity_ = new Point2D(0,0);
     }
 
     public Sprite set_image_(String image_source) {
@@ -28,10 +34,30 @@ public class Sprite extends ImageView {
         return this;
     }
 
-//    public Point2D get_position_() {
-//        return position_;
-//    }
+    public Point2D get_position() {
+        return new Point2D(getX()+getFitWidth()/2, getY()+getFitHeight());
+    }
 
+    public void set_position(Point2D point) {
+        setX(point.getX()-getFitWidth()/2);
+        setY(point.getY()-getFitHeight()/2);
+    }
+
+    public double get_top() {
+        return getY();
+    }
+
+    public double get_right() {
+        return getX() + getFitWidth();
+    }
+
+    public double get_left() {
+        return getX();
+    }
+
+    public double get_bottom() {
+        return getY() + getFitHeight();
+    }
 
     public Point2D get_image_direction_() {
         return image_direction_;
@@ -60,6 +86,14 @@ public class Sprite extends ImageView {
 
     public Sprite set_image_angle() {
         return this;
+    }
+
+    public State get_state() {
+        return state;
+    }
+
+    public BoundaryAction get_boundary_action() {
+        return boundaryAction;
     }
 
     final void update() {
