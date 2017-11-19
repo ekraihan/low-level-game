@@ -5,95 +5,119 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public class Sprite extends ImageView {
-    private Point2D velocity_, acceleration_;
+public abstract class Sprite extends ImageView {
+    private Point2D velocity_;
     private Point2D image_direction_;
-    private Dimension2D dimensions_;
-    private State state;
-    private BoundaryAction boundaryAction;
-
-    public enum BoundaryAction {
-        DIE, CONTINUE, BOUNCE
-    }
+    private State state_;
+    private BoundaryAction boundaryAction_;
 
     public enum State {
         HIDDEN, DEAD, ALIVE
     }
 
-    public Sprite(String image_source) {
-        Image image = new Image(image_source);
-        setImage(image);
-        setFitHeight(image.getHeight());
-        setFitWidth(image.getWidth());
-
+    protected Sprite() {
+        boundaryAction_ = BoundaryAction.CONTINUE;
         velocity_ = new Point2D(0,0);
     }
 
-    public Sprite set_image_(String image_source) {
-        this.setImage(new Image(image_source));
+    public Sprite(String image_source) {
+        setImage(image_source);
+        boundaryAction_ = BoundaryAction.CONTINUE;
+        velocity_ = new Point2D(0,0);
+    }
+
+    public final Sprite setBoundaryAction(BoundaryAction boundaryAction) {
+        this.boundaryAction_ = boundaryAction;
         return this;
     }
 
-    public Point2D get_position() {
+    public final Sprite setImage(String image_source) {
+        Image image = new Image(image_source);
+        setImage(image);
+        setPreserveRatio(true);
+        setFitHeight(image.getHeight());
+        setFitWidth(image.getWidth());
+        return this;
+    }
+
+    public final Point2D getPosition() {
         return new Point2D(getX()+getFitWidth()/2, getY()+getFitHeight());
     }
 
-    public void set_position(Point2D point) {
+    public final Sprite setPosition(Point2D point) {
         setX(point.getX()-getFitWidth()/2);
         setY(point.getY()-getFitHeight()/2);
-    }
-
-    public double get_top() {
-        return getY();
-    }
-
-    public double get_right() {
-        return getX() + getFitWidth();
-    }
-
-    public double get_left() {
-        return getX();
-    }
-
-    public double get_bottom() {
-        return getY() + getFitHeight();
-    }
-
-    public Point2D get_image_direction_() {
-        return image_direction_;
-    }
-
-    public Point2D get_velocity_() {
-        return velocity_;
-    }
-
-    public Point2D get_acceleration_() {
-        return acceleration_;
-    }
-
-    public Sprite add_vector(double force, double direction) {
         return this;
     }
 
-    public Sprite set_velocity(Point2D velocity) {
+    public final double getTop() {
+        return getY();
+    }
+
+    public final double getRight() {
+        return getX() + getFitWidth();
+    }
+
+    public final double getLeft() {
+        return getX();
+    }
+
+    public final double getBottom() {
+        return getY() + getFitHeight();
+    }
+
+    public final Point2D getImageDirection() {
+        return image_direction_;
+    }
+
+    public final Point2D getVelocity() {
+        return velocity_;
+    }
+
+    public final Sprite addVector(double direction, double force) {
+        direction -= 90;
+        direction *= Math.PI / 180;
+//        velocity_.getX()
+        return this;
+    }
+
+    public final Sprite setVelocity(Point2D velocity) {
         this.velocity_ = velocity;
         return this;
     }
 
-    public Sprite change_image_angle_by() {
+    public final Sprite setSize(Dimension2D dimensions) {
+        setFitHeight(dimensions.getHeight());
+        setFitWidth(dimensions.getWidth());
         return this;
     }
 
-    public Sprite set_image_angle() {
+    public final Sprite rotate(double amount) {
+        setRotate(getRotate() + amount);
         return this;
     }
 
-    public State get_state() {
-        return state;
+    public final Sprite setImageAngle(double angle) {
+        setRotate(angle-90);
+        return this;
     }
 
-    public BoundaryAction get_boundary_action() {
-        return boundaryAction;
+    public final void scale(double scaleAmount) {
+        setScaleX(getScaleX()*scaleAmount);
+        setScaleY(getScaleY()*scaleAmount);
+    }
+
+    public final State getState() {
+        return state_;
+    }
+
+    public final Sprite setState(State state) {
+        this.state_ = state;
+        return this;
+    }
+
+    public final BoundaryAction getBoundaryAction() {
+        return boundaryAction_;
     }
 
     final void update() {
@@ -101,4 +125,8 @@ public class Sprite extends ImageView {
         setY(getY() + velocity_.getY());
     }
 
+    final void kill() {
+        setVelocity(new Point2D(0,0));
+        setDisable(true);
+    }
 }

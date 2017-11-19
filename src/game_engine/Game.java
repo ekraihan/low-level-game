@@ -1,9 +1,6 @@
 package game_engine;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableMap;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -12,42 +9,59 @@ import javafx.stage.Stage;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 abstract public class Game extends Application {
     private final static int FRAME_RATE = 30;
 
-    private Dimension2D dimensions = new Dimension2D(500, 500);
+    private final Dimension2D dimensions;
 
-    private List<Sprite> sprite_list = new ArrayList<>();
+    private List<Sprite> sprite_list;
 
-    private HashMap<BooleanSupplier, Runnable> actions = new HashMap<>();
+    private HashMap<BooleanSupplier, Runnable> actions;
 
-    private EnumSet<KeyCode> keySet = EnumSet.noneOf(KeyCode.class);
+    private EnumSet<KeyCode> keySet;
+
+    public Game() {
+        this.dimensions = getDimensions();
+        this.sprite_list = new ArrayList<>();
+        this.actions = new HashMap<>();
+        this.keySet = EnumSet.noneOf(KeyCode.class);
+    }
 
     private void update() {
-        sprite_list.forEach(Sprite::update);
+        sprite_list.forEach(sprite -> {
+            sprite.update();
+            sprite.getBoundaryAction().check(this, sprite);
+        });
         actions.forEach((condition, action) -> {
             if (condition.getAsBoolean())
                 action.run();
         });
     }
 
-    protected final void add_sprite(Sprite sprite) {
+    protected final Sprite addSprite(Sprite sprite) {
         sprite_list.add(sprite);
+        return sprite;
     }
 
-    protected void add_conditional_action(BooleanSupplier condition, Runnable action) {
+    protected final void addConditionalAction(BooleanSupplier condition, Runnable action) {
         actions.put(condition,action);
     }
 
-    protected final void set_dimensions(int width, int height) {
-        dimensions = new Dimension2D(width, height);
+    protected final void addKeyAction(KeyCode keyCode, Runnable action) {
+        actions.put(() -> keyPressed(keyCode), action);
     }
 
-    protected final Boolean key_pressed(KeyCode key) {
+    protected final Boolean keyPressed(KeyCode key) {
         return keySet.contains(key);
+    }
+
+    public final double getHeight() {
+        return dimensions.getHeight();
+    }
+
+    public final double getWidth() {
+        return dimensions.getWidth();
     }
 
     @Override
@@ -72,4 +86,6 @@ abstract public class Game extends Application {
     }
 
     public abstract void init() throws Exception;
+
+    public abstract Dimension2D getDimensions();
 }
