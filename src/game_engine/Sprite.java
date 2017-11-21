@@ -5,22 +5,23 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.concurrent.locks.Condition;
+
 public abstract class Sprite extends ImageView {
     private Point2D velocity_;
     private Point2D image_direction_;
-    private State state_;
     private BoundaryAction boundaryAction_;
-
-    public enum State {
-        HIDDEN, DEAD, ALIVE
-    }
+    private String image_source_;
 
     protected Sprite() {
+        setPreserveRatio(true);
         boundaryAction_ = BoundaryAction.CONTINUE;
         velocity_ = new Point2D(0,0);
     }
 
     public Sprite(String image_source) {
+        setPreserveRatio(true);
+        image_source_ = image_source;
         setImage(image_source);
         boundaryAction_ = BoundaryAction.CONTINUE;
         velocity_ = new Point2D(0,0);
@@ -32,9 +33,9 @@ public abstract class Sprite extends ImageView {
     }
 
     public final Sprite setImage(String image_source) {
+        image_source_ = image_source;
         Image image = new Image(image_source);
         setImage(image);
-        setPreserveRatio(true);
         setFitHeight(image.getHeight());
         setFitWidth(image.getWidth());
         return this;
@@ -59,7 +60,7 @@ public abstract class Sprite extends ImageView {
     }
 
     public final double getLeft() {
-        return getX();
+        return getX()-getFitWidth()/2;
     }
 
     public final double getBottom() {
@@ -76,8 +77,8 @@ public abstract class Sprite extends ImageView {
 
     public final Sprite addVector(double direction, double force) {
         direction -= 90;
-        direction *= Math.PI / 180;
-//        velocity_.getX()
+        double angle = direction * (Math.PI / 180);
+        velocity_ = velocity_.add(Math.cos(angle)*force, Math.sin(angle)*force);
         return this;
     }
 
@@ -87,8 +88,8 @@ public abstract class Sprite extends ImageView {
     }
 
     public final Sprite setSize(Dimension2D dimensions) {
-        setFitHeight(dimensions.getHeight());
-        setFitWidth(dimensions.getWidth());
+        setScaleX(dimensions.getHeight());
+        setScaleY(dimensions.getWidth());
         return this;
     }
 
@@ -107,17 +108,23 @@ public abstract class Sprite extends ImageView {
         setScaleY(getScaleY()*scaleAmount);
     }
 
-    public final State getState() {
-        return state_;
+    public final void hide() {
+        imageProperty().setValue(null);
     }
 
-    public final Sprite setState(State state) {
-        this.state_ = state;
-        return this;
+    public final void show() {
+        imageProperty().setValue(new Image(image_source_));
     }
 
     public final BoundaryAction getBoundaryAction() {
         return boundaryAction_;
+    }
+
+    public final void toggleVisiblity() {
+        if (imageProperty().get() == null)
+            show();
+        else
+            hide();
     }
 
     final void update() {
@@ -127,6 +134,6 @@ public abstract class Sprite extends ImageView {
 
     final void kill() {
         setVelocity(new Point2D(0,0));
-        setDisable(true);
+        imageProperty().setValue(null);
     }
 }

@@ -1,6 +1,7 @@
 package game_engine;
 
 import javafx.geometry.Point2D;
+import javafx.scene.transform.Affine;
 
 import java.util.function.BiConsumer;
 
@@ -9,7 +10,8 @@ import static game_engine.CollisionManager.*;
 public enum BoundaryAction {
         DIE((game, sprite) -> {
                 if (CollisionManager.spriteOffScreen(game, sprite)){
-                        sprite.kill();
+                        sprite.hide();
+                        sprite.setVelocity(new Point2D(0,0));
                 }
         }),
 
@@ -18,12 +20,14 @@ public enum BoundaryAction {
         BOUNCE((game, sprite) -> {
                 if (spriteTouchingBottom(game, sprite) || spriteTouchingTop(game,sprite))
                 {
-                        System.out.println("Touching Bottom Or Top");
+                        Affine matrix = new Affine(1, 0, 0, 0, -1, 0);
+                        sprite.setVelocity(matrix.transform(sprite.getVelocity()));
                 }
 
                 if (spriteTouchingLeft(game, sprite) || spriteTouchingRight(game,sprite))
                 {
-                        System.out.println("Touching Left Or Right");
+                        Affine matrix = new Affine(-1, 0, 0, 0, 1, 0);
+                        sprite.setVelocity(matrix.transform(sprite.getVelocity()));
                 }
         }),
 

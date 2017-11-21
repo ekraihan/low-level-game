@@ -11,7 +11,9 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 
 abstract public class Game extends Application {
-    private final static int FRAME_RATE = 30;
+    private final static int FRAME_RATE = 40;
+
+    private final Timer timer;
 
     private final Dimension2D dimensions;
 
@@ -22,6 +24,7 @@ abstract public class Game extends Application {
     private EnumSet<KeyCode> keySet;
 
     public Game() {
+        this.timer = new Timer();
         this.dimensions = getDimensions();
         this.sprite_list = new ArrayList<>();
         this.actions = new HashMap<>();
@@ -52,6 +55,10 @@ abstract public class Game extends Application {
         actions.put(() -> keyPressed(keyCode), action);
     }
 
+    protected final void addKeyActions(List<KeyCode> keyCodes, Runnable action) {
+       actions.put(() -> keyCodes.stream().allMatch(this::keyPressed), action);
+    }
+
     protected final Boolean keyPressed(KeyCode key) {
         return keySet.contains(key);
     }
@@ -77,12 +84,16 @@ abstract public class Game extends Application {
         stage.setScene(scene);
         stage.show();
 
-        new Timer().schedule(new TimerTask() {
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 update();
             }
         }, 0, 1000/FRAME_RATE);
+    }
+
+    public void stop() {
+        timer.cancel();
     }
 
     public abstract void init() throws Exception;
