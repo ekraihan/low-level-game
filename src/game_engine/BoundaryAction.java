@@ -5,11 +5,11 @@ import javafx.scene.transform.Affine;
 
 import java.util.function.BiConsumer;
 
-import static game_engine.CollisionManager.*;
+import static game_engine.SpriteManager.*;
 
 public enum BoundaryAction {
         DIE((game, sprite) -> {
-                if (CollisionManager.spriteOffScreen(game, sprite)){
+                if (SpriteManager.spriteOffScreen(game, sprite)){
                         sprite.hide();
                         sprite.setVelocity(new Point2D(0,0));
                 }

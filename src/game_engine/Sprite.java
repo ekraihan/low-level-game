@@ -41,8 +41,13 @@ public class Sprite extends ImageView {
         return this;
     }
 
+    @Override
+    public boolean isResizable() {
+        return true;
+    }
+
     public final Point2D getPosition() {
-        return new Point2D(getX()+getFitWidth()/2, getY()+getFitHeight());
+        return new Point2D(getX()+getFitWidth()/2, getY()+getFitHeight()/2);
     }
 
     public final Sprite setPosition(Point2D point) {
@@ -60,7 +65,7 @@ public class Sprite extends ImageView {
     }
 
     public final double getLeft() {
-        return getX()-getFitWidth()/2;
+        return getX();
     }
 
     public final double getBottom() {
@@ -135,5 +140,15 @@ public class Sprite extends ImageView {
     final void kill() {
         setVelocity(new Point2D(0,0));
         imageProperty().setValue(null);
+    }
+
+    public final void printProperties() {
+        System.out.println(
+                "[Sprite]: " + image_source_ + "\n"
+                + "[Velocity]: " + velocity_ + "\n"
+                + "[Bottom]: " + getBottom() + "\n"
+                + "[Position]: " + getPosition() + "\n"
+                + "[Fit Height]: " + getFitHeight() + "\n"
+        );
     }
 }

@@ -1,6 +1,6 @@
 package game_engine;
 
-public abstract class CollisionManager {
+public abstract class SpriteManager {
 
     public static boolean spritesColliding(Sprite sprite1, Sprite sprite2) {
         return !(sprite1.getBottom() < sprite2.getTop() ||

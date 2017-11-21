@@ -90,9 +90,16 @@ abstract public class Game extends Application {
 
         scene.setOnKeyPressed(event -> keySet.add(event.getCode()));
         scene.setOnKeyReleased(event -> keySet.remove(event.getCode()));
+        scene.setOnMouseMoved(event ->
+                System.out.println(
+                        "Y: " + event.getY() + "\n"
+                        + "X: " + event.getX()
+                )
+        );
 
         stage.setTitle("Low Level Game");
         stage.setScene(scene);
+        stage.sizeToScene();
         stage.show();
 
         timer.schedule(new TimerTask() {
@@ -109,5 +116,5 @@ abstract public class Game extends Application {
 
     public abstract void init() throws Exception;
 
-    public abstract Dimension2D getDimensions();
+    protected abstract Dimension2D getDimensions();
 }
