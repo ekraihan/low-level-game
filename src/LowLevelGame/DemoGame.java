@@ -1,6 +1,7 @@
 package LowLevelGame;
 
 import game_engine.BoundaryAction;
+import game_engine.CollisionManager;
 import game_engine.Game;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;

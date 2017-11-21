@@ -19,15 +19,18 @@ abstract public class Game extends Application {
 
     private List<Sprite> sprite_list;
 
-    private HashMap<BooleanSupplier, Runnable> actions;
+    private HashMap<BooleanSupplier, Runnable> conditionalActions;
+
+    private List<Runnable> actions;
 
     private EnumSet<KeyCode> keySet;
 
     public Game() {
+        this.actions = new ArrayList<>();
         this.timer = new Timer();
         this.dimensions = getDimensions();
         this.sprite_list = new ArrayList<>();
-        this.actions = new HashMap<>();
+        this.conditionalActions = new HashMap<>();
         this.keySet = EnumSet.noneOf(KeyCode.class);
     }
 
@@ -36,10 +39,11 @@ abstract public class Game extends Application {
             sprite.update();
             sprite.getBoundaryAction().check(this, sprite);
         });
-        actions.forEach((condition, action) -> {
+        conditionalActions.forEach((condition, action) -> {
             if (condition.getAsBoolean())
                 action.run();
         });
+        actions.forEach(Runnable::run);
     }
 
     protected final Sprite addSprite(Sprite sprite) {
@@ -48,15 +52,19 @@ abstract public class Game extends Application {
     }
 
     protected final void addConditionalAction(BooleanSupplier condition, Runnable action) {
-        actions.put(condition,action);
+        conditionalActions.put(condition,action);
     }
 
     protected final void addKeyAction(KeyCode keyCode, Runnable action) {
-        actions.put(() -> keyPressed(keyCode), action);
+        conditionalActions.put(() -> keyPressed(keyCode), action);
+    }
+
+    protected final void addAction(Runnable action) {
+        actions.add(action);
     }
 
     protected final void addKeyActions(List<KeyCode> keyCodes, Runnable action) {
-       actions.put(() -> keyCodes.stream().allMatch(this::keyPressed), action);
+        conditionalActions.put(() -> keyCodes.stream().allMatch(this::keyPressed), action);
     }
 
     protected final Boolean keyPressed(KeyCode key) {
