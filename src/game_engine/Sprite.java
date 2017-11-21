@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.concurrent.locks.Condition;
 
-public abstract class Sprite extends ImageView {
+public class Sprite extends ImageView {
     private Point2D velocity_;
     private Point2D image_direction_;
     private BoundaryAction boundaryAction_;

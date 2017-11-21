@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 
 abstract public class Game extends Application {
-    private final static int FRAME_RATE = 40;
+    private final static int FRAME_RATE = 32;
 
     private final Timer timer;
 
@@ -46,9 +46,12 @@ abstract public class Game extends Application {
         actions.forEach(Runnable::run);
     }
 
-    protected final Sprite addSprite(Sprite sprite) {
+    protected final void addSprite(Sprite sprite) {
         sprite_list.add(sprite);
-        return sprite;
+    }
+
+    protected final void addSprites(List<Sprite> sprites) {
+        sprite_list.addAll(sprites);
     }
 
     protected final void addConditionalAction(BooleanSupplier condition, Runnable action) {
