@@ -5,8 +5,8 @@ import game_engine.Sprite;
 /**
  * Created by eliaskraihanzel on 11/21/17.
  */
-public class Guy extends Sprite {
-    Guy(String image) {
+public class Hero extends Sprite {
+    Hero(String image) {
         super(image);
     }
 

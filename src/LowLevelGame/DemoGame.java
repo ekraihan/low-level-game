@@ -7,6 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class DemoGame extends Game {
     private final static Dimension2D GAME_DIMENSIONS = new Dimension2D(1600, 1000);
@@ -14,49 +15,25 @@ public class DemoGame extends Game {
     private final static int STREET = 730;
     private final static double BUILDING_BOTTOM = 700;
     private final static double BUILDING_SPREAD = 100;
-    private final static double BUILDING_START = -200;
+    private final static double START = -200;
 
-    private final int NUM_BUILDINGS = 500;
-    Guy hero =  new Guy("hero.PNG");
+    private final static int NUM_BUILDINGS = 100;
+    private final static int NUM_ROAD_PIECES = 50;
+    private final static int MAX_SPEED = 100;
 
-    List<Sprite> buildings = new ArrayList<>();
+    Hero hero =  new Hero("hero.PNG");
+
+    Vector<Sprite> buildings = new Vector<>();
+    Vector<Sprite> roadPieces = new Vector<>();
 
     public void init() {
-        Random random = new Random();
-        double buildingStart = BUILDING_START;
-        for (int i = 0; i < NUM_BUILDINGS; i++) {
-            buildings.add(
-                    random.nextBoolean() ?
-                            new Tower(BUILDING_BOTTOM, buildingStart+=BUILDING_SPREAD) :
-                            new House(BUILDING_BOTTOM, buildingStart+=BUILDING_SPREAD)
-            );
-        }
+        buildSky();
+        buildRoad();
+        buildBuildings();
 
-        addSprite(new Background("sky1.png", GAME_DIMENSIONS));
-        Sprite road = new Sprite("road.png").setTop(BUILDING_BOTTOM-20);
-        road.printProperties();
-        addSprite(road);
-        addSprites(buildings);
+        addSceneActions();
 
 
-
-
-        addKeyAction(KeyCode.RIGHT, () -> buildings.forEach(sprite -> sprite.addVector(-90, 1)));
-        addKeyAction(KeyCode.LEFT, () -> buildings.forEach(sprite -> sprite.addVector(90, 1)));
-        addConditionalAction(
-                () -> buildings.get(0).getX() > -50,
-                () -> buildings.forEach(building -> {
-                    building.setVelocity(new Point2D(0,0));
-                    building.setX(building.getX()-1);
-                })
-        );
-        addConditionalAction(
-                () -> buildings.get(NUM_BUILDINGS-1).getX() < GAME_DIMENSIONS.getWidth()+50,
-                () -> buildings.forEach(building -> {
-                    building.setVelocity(new Point2D(0,0));
-                    building.setX(building.getX()+1);
-                })
-        );
 
 //        addKeyAction(KeyCode.SPACE, hero::jump);
 //        addAction(() -> {
@@ -80,7 +57,87 @@ public class DemoGame extends Game {
 
     }
 
+    private void buildSky() {
+        addSprite(new Background("sky1.png", GAME_DIMENSIONS));
+    }
+
+    private void buildRoad() {
+        double roadStart = START-100 ;
+        for (int i = 0; i < NUM_ROAD_PIECES; i++) {
+            Road road = new Road(BUILDING_BOTTOM+100, roadStart+= 200);
+            road.setFitWidth(600);
+            roadPieces.add(road);
+        }
+
+        addSprites(roadPieces);
+    }
+
+    private void buildBuildings() {
+        Random random = new Random();
+        double buildingStart = START;
+        for (int i = 0; i < NUM_BUILDINGS; i++) {
+            buildings.add(
+                    random.nextBoolean() ?
+                            new Tower(BUILDING_BOTTOM, buildingStart+=BUILDING_SPREAD) :
+                            new House(BUILDING_BOTTOM, buildingStart+=BUILDING_SPREAD)
+            );
+        }
+        addSprites(buildings);
+    }
+
+    private void addSceneActions() {
+        addKeyAction(
+                KeyCode.RIGHT,
+                () -> {
+                    if (buildings.firstElement().getVelocity().getX() > -MAX_SPEED){
+                        buildings.forEach(sprite -> sprite.addVector(-90, 1));
+                        roadPieces.forEach(sprite -> sprite.addVector(-90, 1));
+                    }
+                }
+        );
+
+        addKeyAction(KeyCode.LEFT,
+                () -> {
+                    if (buildings.firstElement().getVelocity().getX() < MAX_SPEED){
+                        buildings.forEach(sprite -> sprite.addVector(90, 1));
+                        roadPieces.forEach(sprite -> sprite.addVector(90, 1));
+                    }
+                }
+        );
+
+        addConditionalAction(
+                () -> buildings.firstElement().getX() > -50,
+                () -> {
+                    buildings.forEach(building -> {
+                        building.setVelocity(new Point2D(0,0));
+                        building.setX(building.getX()-1);
+
+                    });
+                    roadPieces.forEach(roadPiece -> {
+                        roadPiece.setVelocity(new Point2D(0,0));
+                        roadPiece.setX(roadPiece.getX()-1);
+                    });
+                }
+        );
+
+        addConditionalAction(
+                () -> buildings.lastElement().getX() < GAME_DIMENSIONS.getWidth()+50,
+                () -> {
+                    buildings.forEach(building -> {
+                        building.setVelocity(new Point2D(0,0));
+                        building.setX(building.getX()+1);
+                    });
+                    roadPieces.forEach(roadPiece -> {
+                        roadPiece.setVelocity(new Point2D(0,0));
+                        roadPiece.setX(roadPiece.getX()+1);
+                    });
+                }
+        );
+    }
+
     public Dimension2D getDimensions() {
         return GAME_DIMENSIONS;
     }
+
+
 }
