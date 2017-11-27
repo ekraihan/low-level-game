@@ -14,13 +14,11 @@ public class Sprite extends ImageView {
     private String image_source_;
 
     protected Sprite() {
-        setPreserveRatio(true);
         boundaryAction_ = BoundaryAction.CONTINUE;
         velocity_ = new Point2D(0,0);
     }
 
     public Sprite(String image_source) {
-        setPreserveRatio(true);
         image_source_ = image_source;
         setImage(image_source);
         boundaryAction_ = BoundaryAction.CONTINUE;
@@ -72,6 +70,16 @@ public class Sprite extends ImageView {
         return getY() + getFitHeight();
     }
 
+    public final Sprite setBottom(double bottom) {
+        setY(bottom-getFitHeight());
+        return this;
+    }
+
+    public final Sprite setTop(double top) {
+        setY(top);
+        return this;
+    }
+
     public final Point2D getImageDirection() {
         return image_direction_;
     }
@@ -93,8 +101,13 @@ public class Sprite extends ImageView {
     }
 
     public final Sprite setSize(Dimension2D dimensions) {
-        setScaleX(dimensions.getHeight());
-        setScaleY(dimensions.getWidth());
+        Point2D currentPosition = getPosition();
+        setFitHeight(dimensions.getHeight());
+        setFitWidth(dimensions.getWidth());
+        setY(currentPosition.getY() - getFitHeight()/2);
+        setX(currentPosition.getX() - getFitWidth()/2);
+//        setScaleX(dimensions.getWidth()/fitWidthProperty().get());
+//        setScaleY(dimensions.getHeight()/fitHeightProperty().get());
         return this;
     }
 
@@ -109,8 +122,9 @@ public class Sprite extends ImageView {
     }
 
     public final void scale(double scaleAmount) {
-        setScaleX(getScaleX()*scaleAmount);
-        setScaleY(getScaleY()*scaleAmount);
+        setSize(new Dimension2D(fitWidthProperty().get()*scaleAmount, fitHeightProperty().get()*scaleAmount));
+//        setScaleX(getScaleX()*scaleAmount);
+//        setScaleY(getScaleY()*scaleAmount);
     }
 
     public final void hide() {
@@ -139,7 +153,7 @@ public class Sprite extends ImageView {
 
     final void kill() {
         setVelocity(new Point2D(0,0));
-        imageProperty().setValue(null);
+        hide();
     }
 
     public final void printProperties() {

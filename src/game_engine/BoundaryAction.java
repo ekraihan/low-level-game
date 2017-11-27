@@ -10,8 +10,7 @@ import static game_engine.SpriteManager.*;
 public enum BoundaryAction {
         DIE((game, sprite) -> {
                 if (SpriteManager.spriteOffScreen(game, sprite)){
-                        sprite.hide();
-                        sprite.setVelocity(new Point2D(0,0));
+                        sprite.kill();
                 }
         }),
 
