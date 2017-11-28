@@ -78,13 +78,16 @@ public class Hero extends Sprite {
 
     public void grow(double scaleAmount) {
         Point2D position = getPosition();
+        bulletList.forEach(bullet -> bullet.scale(scaleAmount));
         scale(scaleAmount);
         setPosition(position);
     }
 
     public void shrink(double scaleAmount) {
         Point2D position = getPosition();
+        bulletList.forEach(bullet -> bullet.scale(scaleAmount));
         scale(scaleAmount);
         setPosition(position);
     }
+
 }
