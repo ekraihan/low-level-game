@@ -11,6 +11,7 @@ public class Sprite extends ImageView {
     private Point2D velocity_;
     private Point2D image_direction_;
     private BoundaryAction boundaryAction_;
+    private Dimension2D size_;
     private String image_source_;
 
     protected Sprite() {
@@ -101,14 +102,17 @@ public class Sprite extends ImageView {
     }
 
     public final Sprite setSize(Dimension2D dimensions) {
+        size_ = dimensions;
         Point2D currentPosition = getPosition();
         setFitHeight(dimensions.getHeight());
         setFitWidth(dimensions.getWidth());
         setY(currentPosition.getY() - getFitHeight()/2);
         setX(currentPosition.getX() - getFitWidth()/2);
-//        setScaleX(dimensions.getWidth()/fitWidthProperty().get());
-//        setScaleY(dimensions.getHeight()/fitHeightProperty().get());
         return this;
+    }
+
+    public Dimension2D getSize() {
+        return size_;
     }
 
     public final Sprite rotate(double amount) {
@@ -123,8 +127,6 @@ public class Sprite extends ImageView {
 
     public final void scale(double scaleAmount) {
         setSize(new Dimension2D(fitWidthProperty().get()*scaleAmount, fitHeightProperty().get()*scaleAmount));
-//        setScaleX(getScaleX()*scaleAmount);
-//        setScaleY(getScaleY()*scaleAmount);
     }
 
     public final void hide() {

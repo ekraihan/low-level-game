@@ -18,9 +18,11 @@ public class DemoGame extends Game {
     private final static double START = -200;
     private final static double HERO_BOTTOM = BUILDING_BOTTOM+50;
 
+    private final static String HERO_RIGHT = "heroRight.png";
+    private final static String HERO_LEFT = "heroLeft.png";
     private final static int NUM_BUILDINGS = 100;
     private final static int NUM_ROAD_PIECES = 50;
-    private final static double MAX_SPEED = 20;
+    private final static double MAX_SPEED = 40;
 
     Hero hero = new Hero();
 
@@ -87,12 +89,16 @@ public class DemoGame extends Game {
                 hero.addVector(180, 2);
             }
         });
+
+        addKeyAction(KeyCode.G, () -> hero.grow(1.01));
+        addKeyAction(KeyCode.S, () -> hero.shrink(0.99));
     }
 
     private void addSceneActions() {
         addKeyAction(
                 KeyCode.RIGHT,
                 () -> {
+                    if (hero.turnedLeft()) hero.turnRight();
                     if (buildings.firstElement().getVelocity().getX() > -MAX_SPEED){
                         buildings.forEach(sprite -> sprite.addVector(-90, 1));
                         roadPieces.forEach(sprite -> sprite.addVector(-90, 1));
@@ -102,6 +108,7 @@ public class DemoGame extends Game {
 
         addKeyAction(KeyCode.LEFT,
                 () -> {
+                    if (hero.turnedRight()) hero.turnLeft();
                     if (buildings.firstElement().getVelocity().getX() < MAX_SPEED){
                         buildings.forEach(sprite -> sprite.addVector(90, 1));
                         roadPieces.forEach(sprite -> sprite.addVector(90, 1));
@@ -141,16 +148,16 @@ public class DemoGame extends Game {
         addConditionalAction(
                 () -> buildings.lastElement().getVelocity().getX() > 0,
                 () -> {
-                    buildings.forEach(building -> building.addVector(-90, .2));
-                    roadPieces.forEach(building -> building.addVector(-90, .2));
+                    buildings.forEach(building -> building.addVector(-90, .5));
+                    roadPieces.forEach(building -> building.addVector(-90, .5));
                 }
         );
 
         addConditionalAction(
                 () -> buildings.lastElement().getVelocity().getX() < 0,
                 () -> {
-                    buildings.forEach(building -> building.addVector(90, .3));
-                    roadPieces.forEach(building -> building.addVector(90, .3));
+                    buildings.forEach(building -> building.addVector(90, .5));
+                    roadPieces.forEach(building -> building.addVector(90, .5));
                 }
         );
 
