@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class DemoGame extends Game {
@@ -19,25 +20,31 @@ public class DemoGame extends Game {
     private final static double BUILDING_SPREAD = 100;
     private final static double START = -200;
     private final static double HERO_BOTTOM = BUILDING_BOTTOM+50;
+    private final static double GAME_PLAY_UPPER = 450;
+    private final static double GAME_PLAY_HEIGHT = 300;
+    private final static double GAME_PLAY_WIDTH = 20000;
 
     private final static int NUM_BUILDINGS = 100;
     private final static int NUM_ROAD_PIECES = 50;
+    private final static int NUM_PLATFORMS = 50;
     private final static double MAX_SPEED = 40;
 
-    Hero hero;
+    private Hero hero;
 
-    List<Sprite> allScene = new ArrayList<>();
+    private List<Sprite> allScene = new ArrayList<>();
 
-    Vector<Sprite> buildings = new Vector<>();
-    Vector<Sprite> roadPieces = new Vector<>();
-    List<BadGuy> badGuys;
+    private Vector<Sprite> buildings = new Vector<>();
+    private Vector<Sprite> roadPieces = new Vector<>();
+    private List<BadGuy> badGuys;
+    private List<Platform> platforms = new ArrayList<>();
 
     public void init() {
         buildSky();
         buildRoad();
         buildBuildings();
-        buildHero();
         buildBadGuys();
+        buildPlatforms();
+        buildHero();
 
         addSceneActions();
         addHeroActions();
@@ -86,14 +93,33 @@ public class DemoGame extends Game {
     }
 
     private void buildBadGuys() {
-        badGuys = Stream.generate(BadGuy::new).limit(20).collect(Collectors.toList());
-        badGuys.forEach(badGuy -> badGuy.setPosition(new Point2D(new Random().nextDouble()*30000+500, new Random().nextDouble()*400+500)));
-        addSprites(badGuys);
+        badGuys = Stream.generate(BadGuy::new).limit(NUM_PLATFORMS).collect(Collectors.toList());
+        badGuys.forEach(
+                badGuy -> badGuy.setPosition(
+                        new Point2D(
+                                new Random().nextDouble()*GAME_PLAY_WIDTH+GAME_DIMENSIONS.getWidth(),
+                                new Random().nextDouble()*GAME_PLAY_HEIGHT + GAME_PLAY_UPPER
+                        )
+                )
+        );
         allScene.addAll(badGuys);
+    }
+
+    private void buildPlatforms() {
+        badGuys.forEach(badGuy -> {
+            Platform platform = new Platform();
+            platform.setTop(badGuy.getBottom()).setX(badGuy.getX() - new Random().nextDouble()*400);
+            platforms.add(platform);
+        });
+
+        addSprites(platforms);
+        addSprites(badGuys);
+        allScene.addAll(platforms);
     }
 
     private void addHeroActions() {
         addKeyAction(KeyCode.UP, () -> {
+            System.out.println(hero.getY());
             if (hero.getBottom() >= HERO_BOTTOM)
                 hero.jump();
         });
@@ -137,7 +163,6 @@ public class DemoGame extends Game {
                 () -> allScene.forEach(building -> {
                     building.setVelocity(new Point2D(0,0));
                     building.setX(building.getX()-1);
-
                 })
         );
 

@@ -112,6 +112,7 @@ abstract public class Game extends Application {
 
     public void stop() {
         timer.cancel();
+        sprite_list.forEach(Sprite::destroy);
     }
 
     public abstract void init() throws Exception;

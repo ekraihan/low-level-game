@@ -154,6 +154,8 @@ public class Sprite extends ImageView {
         setY(getY() + velocity_.getY());
     }
 
+    public void destroy() { }
+
     protected final void kill() {
         setVelocity(new Point2D(0,0));
         hide();

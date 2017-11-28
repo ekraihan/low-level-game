@@ -33,7 +33,6 @@ public class Hero extends Sprite {
 
     public void jump() {
         addVector(0, 26);
-        System.out.println("JUMP!!!");
     }
 
     public void fire() {
@@ -90,4 +89,8 @@ public class Hero extends Sprite {
         setPosition(position);
     }
 
+    @Override
+    public void destroy() {
+        timer.cancel();
+    }
 }
