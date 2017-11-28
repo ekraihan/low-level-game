@@ -7,6 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DemoGame extends Game {
@@ -24,7 +25,7 @@ public class DemoGame extends Game {
     private final static int NUM_ROAD_PIECES = 50;
     private final static double MAX_SPEED = 40;
 
-    Hero hero = new Hero();
+    Hero hero;
 
     Vector<Sprite> buildings = new Vector<>();
     Vector<Sprite> roadPieces = new Vector<>();
@@ -68,10 +69,16 @@ public class DemoGame extends Game {
     }
 
     private void buildHero() {
+        List<Bullet> bullets = Stream.generate(Bullet::new).limit(100).collect(Collectors.toList());
+        bullets.forEach(Bullet::hide);
+        addSprites(bullets);
+
+        hero = new Hero(bullets);
         hero.setSize(new Dimension2D(80,80))
                 .setBottom(HERO_BOTTOM)
                 .setX(400);
         addSprite(hero);
+
     }
 
     private void addHeroActions() {

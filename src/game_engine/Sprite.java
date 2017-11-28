@@ -129,8 +129,9 @@ public class Sprite extends ImageView {
         setSize(new Dimension2D(fitWidthProperty().get()*scaleAmount, fitHeightProperty().get()*scaleAmount));
     }
 
-    public final void hide() {
+    public final Sprite hide() {
         imageProperty().setValue(null);
+        return this;
     }
 
     public final void show() {

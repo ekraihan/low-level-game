@@ -50,7 +50,7 @@ abstract public class Game extends Application {
         sprite_list.add(sprite);
     }
 
-    protected final void addSprites(List<Sprite> sprites) {
+    protected final <T extends Sprite> void addSprites(List<T> sprites) {
         sprite_list.addAll(sprites);
     }
 
