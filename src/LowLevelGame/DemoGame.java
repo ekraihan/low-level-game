@@ -16,12 +16,13 @@ public class DemoGame extends Game {
     private final static double BUILDING_BOTTOM = 700;
     private final static double BUILDING_SPREAD = 100;
     private final static double START = -200;
+    private final static double HERO_BOTTOM = BUILDING_BOTTOM+50;
 
     private final static int NUM_BUILDINGS = 100;
     private final static int NUM_ROAD_PIECES = 50;
-    private final static int MAX_SPEED = 100;
+    private final static double MAX_SPEED = 20;
 
-    Hero hero =  new Hero("hero.PNG");
+    Hero hero = new Hero();
 
     Vector<Sprite> buildings = new Vector<>();
     Vector<Sprite> roadPieces = new Vector<>();
@@ -30,31 +31,10 @@ public class DemoGame extends Game {
         buildSky();
         buildRoad();
         buildBuildings();
+        buildHero();
 
         addSceneActions();
-
-
-
-//        addKeyAction(KeyCode.SPACE, hero::jump);
-//        addAction(() -> {
-//            if (hero.getBottom() > STREET) {
-//                hero.setVelocity(new Point2D(0,0));
-//            } else {
-//                hero.addVector(180, 2);
-//            }
-//
-//        });
-
-//        addKeyAction(KeyCode.I, ()-> {
-//            tower.printProperties();
-////            house.printProperties();
-//        });
-//
-//        addKeyAction(KeyCode.U, () -> tower.scale(.9));
-//        addKeyAction(KeyCode.D, () -> tower.scale(1.1));
-
-
-
+        addHeroActions();
     }
 
     private void buildSky() {
@@ -83,6 +63,30 @@ public class DemoGame extends Game {
             );
         }
         addSprites(buildings);
+    }
+
+    private void buildHero() {
+        hero.setSize(new Dimension2D(80,80))
+                .setBottom(HERO_BOTTOM)
+                .setX(400);
+        addSprite(hero);
+    }
+
+    private void addHeroActions() {
+        addKeyAction(KeyCode.UP, () -> {
+            if (hero.getBottom() >= HERO_BOTTOM)
+                hero.jump();
+        });
+        addKeyAction(KeyCode.SPACE, hero::fire);
+
+        addAction(() -> {
+            if (hero.getBottom() > HERO_BOTTOM) {
+                hero.setVelocity(new Point2D(0,0));
+                hero.setBottom(HERO_BOTTOM);
+            } else {
+                hero.addVector(180, 2);
+            }
+        });
     }
 
     private void addSceneActions() {
@@ -131,6 +135,30 @@ public class DemoGame extends Game {
                         roadPiece.setVelocity(new Point2D(0,0));
                         roadPiece.setX(roadPiece.getX()+1);
                     });
+                }
+        );
+
+        addConditionalAction(
+                () -> buildings.lastElement().getVelocity().getX() > 0,
+                () -> {
+                    buildings.forEach(building -> building.addVector(-90, .2));
+                    roadPieces.forEach(building -> building.addVector(-90, .2));
+                }
+        );
+
+        addConditionalAction(
+                () -> buildings.lastElement().getVelocity().getX() < 0,
+                () -> {
+                    buildings.forEach(building -> building.addVector(90, .3));
+                    roadPieces.forEach(building -> building.addVector(90, .3));
+                }
+        );
+
+        addConditionalAction(
+                () -> Math.abs(buildings.lastElement().getVelocity().getX()) < .1,
+                () -> {
+                    buildings.forEach(building -> building.setVelocity(new Point2D(0,0)));
+                    roadPieces.forEach(building -> building.setVelocity(new Point2D(0,0)));
                 }
         );
     }

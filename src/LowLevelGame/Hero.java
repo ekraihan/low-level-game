@@ -1,17 +1,21 @@
 package LowLevelGame;
 
 import game_engine.Sprite;
+import javafx.geometry.Point2D;
 
-/**
- * Created by eliaskraihanzel on 11/21/17.
- */
 public class Hero extends Sprite {
-    Hero(String image) {
-        super(image);
+    private final static String imageSource = "hero.PNG";
+    Hero() {
+        super(imageSource);
     }
 
     public void jump() {
         addVector(0, 20);
+        System.out.println("JUMP!!!");
+    }
+
+    public void fire() {
+        System.out.println("FIRE!!!");
     }
 
 }

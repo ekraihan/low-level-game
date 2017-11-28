@@ -90,12 +90,12 @@ abstract public class Game extends Application {
 
         scene.setOnKeyPressed(event -> keySet.add(event.getCode()));
         scene.setOnKeyReleased(event -> keySet.remove(event.getCode()));
-        scene.setOnMouseMoved(event ->
-                System.out.println(
-                        "Y: " + event.getY() + "\n"
-                        + "X: " + event.getX()
-                )
-        );
+//        scene.setOnMouseMoved(event ->
+//                System.out.println(
+//                        "Y: " + event.getY() + "\n"
+//                        + "X: " + event.getX()
+//                )
+//        );
 
         stage.setTitle("Low Level Game");
         stage.setScene(scene);
