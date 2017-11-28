@@ -3,6 +3,7 @@ package LowLevelGame;
 import com.sun.tools.hat.internal.util.VectorSorter;
 import game_engine.Game;
 import game_engine.Sprite;
+import game_engine.SpriteManager;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
@@ -17,16 +18,16 @@ public class DemoGame extends Game {
 
     private final static int STREET = 730;
     private final static double BUILDING_BOTTOM = 700;
-    private final static double BUILDING_SPREAD = 100;
-    private final static double START = -200;
+    private final static double BUILDING_SPREAD = 300;
+    private final static double START = -400;
     private final static double HERO_BOTTOM = BUILDING_BOTTOM+50;
     private final static double GAME_PLAY_UPPER = 450;
     private final static double GAME_PLAY_HEIGHT = 300;
     private final static double GAME_PLAY_WIDTH = 20000;
 
-    private final static int NUM_BUILDINGS = 100;
+    private final static int NUM_BUILDINGS = 50;
     private final static int NUM_ROAD_PIECES = 50;
-    private final static int NUM_PLATFORMS = 50;
+    private final static int NUM_PLATFORMS = 40;
     private final static double MAX_SPEED = 40;
 
     private Hero hero;
@@ -133,6 +134,13 @@ public class DemoGame extends Game {
                 hero.addVector(180, 2);
             }
         });
+
+        addAction(() -> platforms.forEach(platform -> {
+            if (SpriteManager.spriteOnSprite(hero, platform) && hero.getVelocity().getY() >0) {
+                hero.setVelocity(new Point2D(0,0));
+                hero.setBottom(platform.getTop()-20);
+            }
+        }));
 
         addKeyAction(KeyCode.G, () -> hero.grow(1.01));
         addKeyAction(KeyCode.S, () -> hero.shrink(0.99));

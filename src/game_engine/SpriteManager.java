@@ -39,6 +39,13 @@ public abstract class SpriteManager {
         return sprite.getTop() < 0 && !spriteOffTop(game, sprite);
     }
 
+    public static boolean spriteOnSprite(Sprite top, Sprite bottom) {
+        return  top.getBottom() > bottom.getTop()-8 &&
+                top.getBottom() < bottom.getTop()+8&&
+                top.getRight() > bottom.getLeft() &&
+                top.getLeft() < bottom.getRight();
+    }
+
     public static boolean spriteOffBottom(Game game, Sprite sprite) {
         return sprite.getTop() > game.getHeight();
     }
