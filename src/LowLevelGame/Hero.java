@@ -44,7 +44,7 @@ public class Hero extends Sprite {
                 currentBullet = 0;
             }
             bulletList.get(currentBullet).setPosition(getPosition())
-                    .addVector(direction, 10)
+                    .addVector(direction, 17)
                     .show();
             canFire = false;
         }

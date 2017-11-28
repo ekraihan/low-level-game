@@ -1,5 +1,6 @@
 package LowLevelGame;
 
+import com.sun.tools.hat.internal.util.VectorSorter;
 import game_engine.Game;
 import game_engine.Sprite;
 import javafx.geometry.Dimension2D;
@@ -19,22 +20,24 @@ public class DemoGame extends Game {
     private final static double START = -200;
     private final static double HERO_BOTTOM = BUILDING_BOTTOM+50;
 
-    private final static String HERO_RIGHT = "heroRight.png";
-    private final static String HERO_LEFT = "heroLeft.png";
     private final static int NUM_BUILDINGS = 100;
     private final static int NUM_ROAD_PIECES = 50;
     private final static double MAX_SPEED = 40;
 
     Hero hero;
 
+    List<Sprite> allScene = new ArrayList<>();
+
     Vector<Sprite> buildings = new Vector<>();
     Vector<Sprite> roadPieces = new Vector<>();
+    List<BadGuy> badGuys;
 
     public void init() {
         buildSky();
         buildRoad();
         buildBuildings();
         buildHero();
+        buildBadGuys();
 
         addSceneActions();
         addHeroActions();
@@ -53,6 +56,7 @@ public class DemoGame extends Game {
         }
 
         addSprites(roadPieces);
+        allScene.addAll(roadPieces);
     }
 
     private void buildBuildings() {
@@ -66,6 +70,7 @@ public class DemoGame extends Game {
             );
         }
         addSprites(buildings);
+        allScene.addAll(buildings);
     }
 
     private void buildHero() {
@@ -78,7 +83,13 @@ public class DemoGame extends Game {
                 .setBottom(HERO_BOTTOM)
                 .setX(400);
         addSprite(hero);
+    }
 
+    private void buildBadGuys() {
+        badGuys = Stream.generate(BadGuy::new).limit(20).collect(Collectors.toList());
+        badGuys.forEach(badGuy -> badGuy.setPosition(new Point2D(new Random().nextDouble()*30000+500, new Random().nextDouble()*400+500)));
+        addSprites(badGuys);
+        allScene.addAll(badGuys);
     }
 
     private void addHeroActions() {
@@ -107,8 +118,7 @@ public class DemoGame extends Game {
                 () -> {
                     if (hero.turnedLeft()) hero.turnRight();
                     if (buildings.firstElement().getVelocity().getX() > -MAX_SPEED){
-                        buildings.forEach(sprite -> sprite.addVector(-90, 1));
-                        roadPieces.forEach(sprite -> sprite.addVector(-90, 1));
+                        allScene.forEach(sprite -> sprite.addVector(-90, 1));
                     }
                 }
         );
@@ -117,63 +127,41 @@ public class DemoGame extends Game {
                 () -> {
                     if (hero.turnedRight()) hero.turnLeft();
                     if (buildings.firstElement().getVelocity().getX() < MAX_SPEED){
-                        buildings.forEach(sprite -> sprite.addVector(90, 1));
-                        roadPieces.forEach(sprite -> sprite.addVector(90, 1));
+                        allScene.forEach(sprite -> sprite.addVector(90, 1));
                     }
                 }
         );
 
         addConditionalAction(
                 () -> buildings.firstElement().getX() > -50,
-                () -> {
-                    buildings.forEach(building -> {
-                        building.setVelocity(new Point2D(0,0));
-                        building.setX(building.getX()-1);
+                () -> allScene.forEach(building -> {
+                    building.setVelocity(new Point2D(0,0));
+                    building.setX(building.getX()-1);
 
-                    });
-                    roadPieces.forEach(roadPiece -> {
-                        roadPiece.setVelocity(new Point2D(0,0));
-                        roadPiece.setX(roadPiece.getX()-1);
-                    });
-                }
+                })
         );
 
         addConditionalAction(
                 () -> buildings.lastElement().getX() < GAME_DIMENSIONS.getWidth()+50,
-                () -> {
-                    buildings.forEach(building -> {
-                        building.setVelocity(new Point2D(0,0));
-                        building.setX(building.getX()+1);
-                    });
-                    roadPieces.forEach(roadPiece -> {
-                        roadPiece.setVelocity(new Point2D(0,0));
-                        roadPiece.setX(roadPiece.getX()+1);
-                    });
-                }
+                () -> allScene.forEach(sprite -> {
+                    sprite.setVelocity(new Point2D(0,0));
+                    sprite.setX(sprite.getX()+1);
+                })
         );
 
         addConditionalAction(
                 () -> buildings.lastElement().getVelocity().getX() > 0,
-                () -> {
-                    buildings.forEach(building -> building.addVector(-90, .5));
-                    roadPieces.forEach(building -> building.addVector(-90, .5));
-                }
+                () -> allScene.forEach(sprite -> sprite.addVector(-90, .5))
         );
 
         addConditionalAction(
                 () -> buildings.lastElement().getVelocity().getX() < 0,
-                () -> {
-                    buildings.forEach(building -> building.addVector(90, .5));
-                    roadPieces.forEach(building -> building.addVector(90, .5));
-                }
+                () -> allScene.forEach(sprite -> sprite.addVector(90, .5))
         );
 
         addConditionalAction(
                 () -> Math.abs(buildings.lastElement().getVelocity().getX()) < .1,
-                () -> {
-                    buildings.forEach(building -> building.setVelocity(new Point2D(0,0)));
-                    roadPieces.forEach(building -> building.setVelocity(new Point2D(0,0)));
-                }
+                () -> allScene.forEach(sprite -> sprite.setVelocity(new Point2D(0,0)))
         );
     }
 
