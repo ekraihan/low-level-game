@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Hero extends Sprite {
-    private final static String HERO_RIGHT = "heroRight.PNG";
-    private final static String HERO_LEFT = "heroLeft.PNG";
+    private final static String HERO_RIGHT = "heroRight.png";
+    private final static String HERO_LEFT = "heroLeft.png";
     private boolean turnedRight = true;
     private Sprite platform = null;
 
