@@ -28,7 +28,7 @@ public class DemoGame extends Game {
     private final static double GAME_PLAY_WIDTH = 20000;
 
     private final static int NUM_BUILDINGS = 50;
-    private final static int NUM_ROAD_PIECES = 50;
+    private final static int NUM_ROAD_PIECES = 80;
     private final static int NUM_PLATFORMS = 40;
     private final static double MAX_SPEED = 40;
 
@@ -148,10 +148,10 @@ public class DemoGame extends Game {
 
     private void addHeroActions() {
         addKeyAction(KeyCode.UP, () -> {
-            System.out.println(hero.getY());
             if (hero.getBottom() >= HERO_BOTTOM)
                 hero.jump();
         });
+
         addKeyAction(KeyCode.SPACE, hero::fire);
 
         addAction(() -> {
@@ -164,19 +164,22 @@ public class DemoGame extends Game {
         });
 
         addAction(() -> platforms.forEach(platform -> {
-            if (SpriteManager.spriteOnSprite(hero, platform) && hero.getVelocity().getY() >0) {
-                hero.setVelocity(new Point2D(0,0));
-                hero.setBottom(platform.getTop()-20);
+            if (SpriteManager.spriteOnSprite(hero, platform) && hero.getVelocity().getY() > 0) {
+                hero.setPlatform(platform);
             }
         }));
 
-        addAction(() -> badGuys.forEach(badGuy -> {
-            if (SpriteManager.spritesColliding(hero, badGuy)) {
+        addAction(() -> {
+            if (hero.getPlatform() != null && hero.getBottom() > hero.getPlatform().getTop()) {
+                hero.setVelocity(new Point2D(0,0));
+                hero.setBottom(hero.getPlatform().getTop());
+            } else {
+                hero.setPlatform(null);
+            }
+        });
 
-//                Text text = new Text("Game Over!!");
-//                text.setX(100);
-//                text.setY(100);
-//                getRoot().getChildren().add(text);
+        addAction(() -> badGuys.forEach(badGuy -> {
+            if (SpriteManager.spritesColliding(hero, badGuy) && !badGuy.isHit()) {
                 stop();
             }
         }));

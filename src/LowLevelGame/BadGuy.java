@@ -12,6 +12,7 @@ public class BadGuy extends Sprite{
 
     BadGuy() {
         super(IMAGE_SOURCE);
+        scale(1.7);
     }
 
     public void hit() {

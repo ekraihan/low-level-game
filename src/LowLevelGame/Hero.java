@@ -5,6 +5,7 @@ import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ public class Hero extends Sprite {
     private final static String HERO_RIGHT = "heroRight.PNG";
     private final static String HERO_LEFT = "heroLeft.PNG";
     private boolean turnedRight = true;
-    private boolean onPlatform = false;
+    private Sprite platform = null;
 
     private List<Bullet> bulletList;// = Stream.generate(() -> new Bullet().hide()).limit(100).collect(Collectors.toList());
     private int currentBullet = 0;
@@ -95,11 +96,11 @@ public class Hero extends Sprite {
         timer.cancel();
     }
 
-    public void setOnPlatform(boolean onPlatform) {
-        this.onPlatform = onPlatform;
+    public void setPlatform(Sprite platform) {
+        this.platform = platform;
     }
 
-    public boolean isOnPlatform() {
-        return onPlatform;
+    public Sprite getPlatform() {
+        return platform;
     }
 }
