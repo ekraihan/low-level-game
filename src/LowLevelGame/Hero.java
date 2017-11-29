@@ -29,11 +29,10 @@ public class Hero extends Sprite {
             public void run() {
                 canFire = true;
             }
-        },0, 300);
+        },0, 200);
     }
 
     public void jump() {
-//        setPosition(getPosition().subtract(0, ));
         addVector(0, 26);
     }
 

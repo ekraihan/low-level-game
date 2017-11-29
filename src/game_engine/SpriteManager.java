@@ -3,10 +3,19 @@ package game_engine;
 public abstract class SpriteManager {
 
     public static boolean spritesColliding(Sprite sprite1, Sprite sprite2) {
-        return !(sprite1.getBottom() < sprite2.getTop() ||
-                 sprite2.getBottom() < sprite1.getTop() ||
-                 sprite1.getRight() < sprite2.getLeft() ||
-                 sprite2.getRight() < sprite2.getLeft());
+        boolean colliding = false;
+        if (sprite1.isVisible() && sprite2.isVisible()) {
+            colliding = true;
+            if (sprite1.getBottom() < sprite2.getTop() ||
+                    sprite2.getBottom() < sprite1.getTop() ||
+                    sprite1.getRight() < sprite2.getLeft() ||
+                    sprite2.getRight() < sprite1.getLeft()) {
+                colliding = false;
+            }
+        }
+
+
+       return colliding;
     }
 
     public static boolean spriteOffScreen(Game game, Sprite sprite) {

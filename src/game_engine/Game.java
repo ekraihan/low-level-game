@@ -4,7 +4,9 @@ import javafx.application.Application;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -24,6 +26,8 @@ abstract public class Game extends Application {
     private List<Runnable> actions;
 
     private EnumSet<KeyCode> keySet;
+
+    private Group root;
 
     public Game() {
         this.actions = new ArrayList<>();
@@ -84,18 +88,12 @@ abstract public class Game extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Group root = new Group();
+        root = new Group();
         sprite_list.forEach(sprite -> root.getChildren().add(sprite));
         Scene scene = new Scene(root, dimensions.getWidth(), dimensions.getHeight());
 
         scene.setOnKeyPressed(event -> keySet.add(event.getCode()));
         scene.setOnKeyReleased(event -> keySet.remove(event.getCode()));
-//        scene.setOnMouseMoved(event ->
-//                System.out.println(
-//                        "Y: " + event.getY() + "\n"
-//                        + "X: " + event.getX()
-//                )
-//        );
 
         stage.setTitle("Low Level Game");
         stage.setScene(scene);
@@ -111,8 +109,13 @@ abstract public class Game extends Application {
     }
 
     public void stop() {
+
         timer.cancel();
         sprite_list.forEach(Sprite::destroy);
+    }
+
+    public Group getRoot() {
+        return root;
     }
 
     public abstract void init() throws Exception;

@@ -13,6 +13,7 @@ public class Sprite extends ImageView {
     private BoundaryAction boundaryAction_;
     private Dimension2D size_;
     private String image_source_;
+    private boolean visible_;
 
     protected Sprite() {
         boundaryAction_ = BoundaryAction.CONTINUE;
@@ -131,11 +132,13 @@ public class Sprite extends ImageView {
 
     public final Sprite hide() {
         imageProperty().setValue(null);
+        setVisible(false);
         return this;
     }
 
     public final void show() {
         imageProperty().setValue(new Image(image_source_));
+        setVisible(true);
     }
 
     public final BoundaryAction getBoundaryAction() {
@@ -170,4 +173,12 @@ public class Sprite extends ImageView {
                 + "[Fit Height]: " + getFitHeight() + "\n"
         );
     }
+
+//    public void setVisible(boolean visible) {
+//        this.visible_ = visible;
+//    }
+//
+//    public boolean isVisible() {
+//        return visible;
+//    }
 }

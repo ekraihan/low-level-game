@@ -1,12 +1,14 @@
 package LowLevelGame;
 
 import com.sun.tools.hat.internal.util.VectorSorter;
+import game_engine.BoundaryAction;
 import game_engine.Game;
 import game_engine.Sprite;
 import game_engine.SpriteManager;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +40,7 @@ public class DemoGame extends Game {
     private Vector<Sprite> roadPieces = new Vector<>();
     private List<BadGuy> badGuys;
     private List<Platform> platforms = new ArrayList<>();
+    private List<Bullet> bullets;
 
     public void init() {
         buildSky();
@@ -47,6 +50,7 @@ public class DemoGame extends Game {
         buildPlatforms();
         buildHero();
 
+        addBulletActions();
         addSceneActions();
         addHeroActions();
     }
@@ -82,8 +86,9 @@ public class DemoGame extends Game {
     }
 
     private void buildHero() {
-        List<Bullet> bullets = Stream.generate(Bullet::new).limit(100).collect(Collectors.toList());
+        bullets = Stream.generate(Bullet::new).limit(100).collect(Collectors.toList());
         bullets.forEach(Bullet::hide);
+        bullets.forEach(bullet -> bullet.setBoundaryAction(BoundaryAction.DIE));
         addSprites(bullets);
 
         hero = new Hero(bullets);
@@ -118,6 +123,29 @@ public class DemoGame extends Game {
         allScene.addAll(platforms);
     }
 
+    private void addBulletActions() {
+        addAction(
+                () -> badGuys.forEach(badGuy ->
+                        bullets.forEach(bullet -> {
+                            if (SpriteManager.spritesColliding(bullet, badGuy)) {
+                                badGuy.hit();
+                                bullet.hide();
+                            }
+                        })
+                )
+        );
+
+        addAction(
+                () -> badGuys.forEach(badGuy -> {
+                    if (badGuy.isHit()) {
+                        badGuy.rotate(10);
+                        badGuy.addVector(180, 1);
+                    }
+                })
+        );
+
+    }
+
     private void addHeroActions() {
         addKeyAction(KeyCode.UP, () -> {
             System.out.println(hero.getY());
@@ -139,6 +167,17 @@ public class DemoGame extends Game {
             if (SpriteManager.spriteOnSprite(hero, platform) && hero.getVelocity().getY() >0) {
                 hero.setVelocity(new Point2D(0,0));
                 hero.setBottom(platform.getTop()-20);
+            }
+        }));
+
+        addAction(() -> badGuys.forEach(badGuy -> {
+            if (SpriteManager.spritesColliding(hero, badGuy)) {
+
+//                Text text = new Text("Game Over!!");
+//                text.setX(100);
+//                text.setY(100);
+//                getRoot().getChildren().add(text);
+                stop();
             }
         }));
 
