@@ -3,7 +3,7 @@ package LowLevelGame;
 import game_engine.Sprite;
 
 /**
- * Created by eliaskraihanzel on 11/20/17.
+ * A Tower who's bottom is determined thought the constructor parameters
  */
 public class Tower extends Sprite {
     private final static String IMAGE_SOURCE = "tower.png";

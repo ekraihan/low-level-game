@@ -4,8 +4,7 @@ import game_engine.Sprite;
 import javafx.geometry.Dimension2D;
 
 /**
- * Created by eliaskraihanzel on 11/20/17.
- *
+ * A House who's bottom is determined thought the constructor parameters
  */
 public class House extends Sprite {
     private final static String IMAGE_SOURCE = "house.png";

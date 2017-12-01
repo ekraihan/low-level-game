@@ -5,7 +5,7 @@ import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 
 /**
- * Created by eliaskraihanzel on 11/21/17.
+ * Simple background sprite with an image and dimensions
  */
 public class Background extends Sprite {
     Background(String image, Dimension2D dimensions){

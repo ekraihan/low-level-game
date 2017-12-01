@@ -4,7 +4,7 @@ import game_engine.Sprite;
 import javafx.geometry.Dimension2D;
 
 /**
- * Created by eliaskraihanzel on 11/27/17.
+ * A road who's bottom is determined thought the constructor parameters
  */
 public class Road extends Sprite {
     private final static String IMAGE_SOURCE = "road.png";
