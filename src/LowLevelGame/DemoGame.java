@@ -26,6 +26,11 @@ import java.util.stream.Stream;
  * the hero makes if to the end of the level, the game is over.
  */
 public class DemoGame extends Game {
+
+    public static void main (String[] args) {
+        launch();
+    }
+
     private final static Dimension2D GAME_DIMENSIONS = new Dimension2D(1600, 1000);
 
     /// Variables defining positions of sprites

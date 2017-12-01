@@ -51,14 +51,14 @@ public class Hero extends Sprite {
             public void run() {
                 canFire = true;
             }
-        },0, 200);
+        },0, 170);
     }
 
     /**
      * Add an upward vector
      */
     public void jump() {
-        addVector(0, 26);
+        addVector(0, 30);
     }
 
     /**
