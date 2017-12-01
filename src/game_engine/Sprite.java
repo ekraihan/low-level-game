@@ -5,8 +5,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.util.concurrent.locks.Condition;
-
 public class Sprite extends ImageView {
     private Point2D velocity_;
     private Point2D image_direction_;

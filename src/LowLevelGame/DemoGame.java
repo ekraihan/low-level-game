@@ -1,6 +1,5 @@
 package LowLevelGame;
 
-import com.sun.tools.hat.internal.util.VectorSorter;
 import game_engine.BoundaryAction;
 import game_engine.Game;
 import game_engine.Sprite;
@@ -8,11 +7,12 @@ import game_engine.SpriteManager;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
-import javafx.scene.text.Text;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Vector;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class DemoGame extends Game {

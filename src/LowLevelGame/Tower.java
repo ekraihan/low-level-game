@@ -1,7 +1,6 @@
 package LowLevelGame;
 
 import game_engine.Sprite;
-import javafx.geometry.Dimension2D;
 
 /**
  * Created by eliaskraihanzel on 11/20/17.

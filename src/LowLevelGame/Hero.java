@@ -5,11 +5,8 @@ import javafx.geometry.Dimension2D;
 import javafx.geometry.Point2D;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Hero extends Sprite {
     private final static String HERO_RIGHT = "heroRight.png";
